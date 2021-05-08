@@ -17,11 +17,15 @@
 | 9 |  [Java End-of-file](https://www.hackerrank.com/challenges/java-end-of-file/problem) | [Sol](Introduction/EndOfFile.java)  |   Easy  | |
 | 10 | [Java Static Initializer Block](https://www.hackerrank.com/challenges/java-static-initializer-block/problem) | [Sol](Introduction/StaticInitializer.java)  |   Easy  | [Java-static-docs](https://docs.oracle.com/javase/tutorial/java/javaOO/initial.html) |
 | 11 | [Java Int to String](https://www.hackerrank.com/challenges/java-int-to-string/problem)  | [Sol](Introduction/IntToString.java)  |   Easy  | |
-| 12 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
-| 12 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
-| 13 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
-| 12 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
-| 13 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
-| 12 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
-| 13 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
-| 13 |   | [Sol](Introduction/HelloWorld.java)  |   Easy  | |
+| 12 | [Java Date and Time](https://www.hackerrank.com/challenges/java-date-and-time/problem)  | [Sol](Introduction/JavaDate.java)  |   Easy  | [About LocalDate](https://charansai850.medium.com/localdate-java-e7709605c55f), [gfg - Calender](https://www.geeksforgeeks.org/calendar-class-in-java-with-examples/), [set method](https://www.javatpoint.com/java-util-calendar), [editorial](https://www.hackerrank.com/challenges/java-date-and-time/editorial)|
+| 12 | [Java Currency Formatter](https://www.hackerrank.com/challenges/java-currency-formatter/problem)  | [Sol](Introduction/CurrencyFormatter.java)  |   Easy  | [docs](https://docs.oracle.com/javase/8/docs/api/java/text/NumberFormat.html) |
+
+### Strings
+| No |  Problem | Solution  | level  | useful Links |
+| ------------ | ------------ | ------------ |  ------------ | ------------ |
+| 1 | [Java Strings Introduction](https://www.hackerrank.com/challenges/java-strings-introduction/problem)  | [Sol](Strings/StringsIntro.java)  |   Easy  | |
+| 2 | [Java Substring](https://www.hackerrank.com/challenges/java-substring/problem)  | [Sol](Strings/Stringsubstring.java)  |   Easy  | |
+| 3 | [Java Substring Comparisons](https://www.hackerrank.com/challenges/java-string-compare/problem)  | [Sol](Strings/StringsubstringComparision.java)  |   Easy  | [editorial](https://www.hackerrank.com/challenges/java-string-compare/editorial) |
+| 4 | [Java String Reverse](https://www.hackerrank.com/challenges/java-string-reverse/problem)  | [Sol](Strings/Stringreverse.java)  |   Easy  | |
+| 5 |   | [Sol](Strings/StringsubstringComparision.java)  |   Easy  | |
+| 6 |   | [Sol](Strings/StringsIntro.java)  |   Easy  | |

@@ -11,7 +11,7 @@
 - What are the use case of blockchain?
 
 ### **Chapters:**
-1. [What is blockchain?](1-What-is-blockchain/README.md)
+1. [What is blockchain?](1-What-is-blockchain/)
 2. How does blockchain works?
 3. Types of blockchains?
 4. How is blockchain different from what we have today?
