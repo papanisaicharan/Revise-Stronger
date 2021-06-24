@@ -491,7 +491,7 @@ for i in adj:
 print(noOfConnectedComponents, components)
 ```
 - This implementation directly prints each connected component.
-- If we just want the count of the number of connected component, then maintain a variable which increments for each new dfs in the above implementation. OR- Maintain an component array where index i denotes the node and assign it the component number to which it belongs to.
+- If we just want the count of the number of connected component, then maintain a variable which increments for each new dfs/bfs in the above implementation. OR- Maintain an component array where index i denotes the node and assign it the component number to which it belongs to.
 ##### Java
 ```java
 public class Main {
@@ -547,9 +547,9 @@ Procedure for finding cycles:
 
 A connected acyclic graph is termed as Tree.
 
-So, in any graph if we explore BFS, the edges that actually used will form a tree and this called a BFS tree. and remaining edges are called non tree edges
+So, in any graph if we explore BFS, the edges that are actually used will form a tree and this called a BFS tree. and remaining edges are called non tree edges
 
-So, having a cycle is equivalent to find a non tree edge while doing bfs.
+So, having a cycle is equivalent to finding a non tree edge while doing bfs.
 
 We can use DFS as well to find the cycles.
 
@@ -583,3 +583,250 @@ print("parents : ",parent )
 print("pre : ",pre )
 print("post : ",post )
 ```
+
+```Java
+```
+
+Now we perform DFS on the below image, each connected component will generate a DFS tree.
+And each non-tree edge will generate a cycle.
+
+<img src="../images/DFS-pre-post-non-tree.jpg" width="400" height="300">
+
+Applying dfs on directed graph.
+Apart from tree edge, we have non-tree edges.
+And these non-tree edges are again divided into 3 types:
+- Forward edge: these edges go from top level nodes to lower level nodes
+- Back edges: this is opposite of forward edges. Goes from lower level to higher level
+- cross edge: these edges goes from one child tree to other child tree. That too, from higher level to lower level. refer the image for clear understanding
+
+<img src="../images/DFS-pre-post-non-tree-directed.jpg" width="400" height="300">
+
+Now Which one of these will contribute for cycles?
+Ans: A directed graph has a cycle if and only if DFS reveals a back edge
+
+Can classify the type of edge using pre and post numbers:
+- Tree/Forward edge (u,v):
+    - Interval [pre(u), post(u)] contains [pre(v), post(v)]
+- Backward edges (u,v):
+    - Interval [pre(v), post(v)] contains [pre(u), post(u)]
+- Cross edge (u,v):
+    - Interval [pre(u), post(u)] and [pre(v), post(v)] are disjoint
+
+Directed graphs without cycles are useful for modelling dependencies. example: Courses with prerequisites etc
+
+#### Connectivity in directed graphs:
+Strongly connected: If there is a path from i to j and path from j to i. then it is strongly connected
+- Dierected graph can be decomposed into strongly connected components (SCCs)
+    - All pairs of nodes in an SCC are strongly connected.
+    - <img src="../images/SCCs.jpg" width="400" height="300">
+
+A number of other structural properties can be inferred from DFS numbering
+- Articulation points (vertices)
+    - Removing such a vertex disconnects the graph
+- Bridges (edges)
+    - Removing such an edge disconnects the graph
+
+#### Directed acyclic graphs (DAG)
+- G = (V,E), a directed graph
+- No cycles:
+	- No directed path from any v in V back to itself
+- Such a grpah are called DAGs
+
+Below is an example of DAG
+
+<img src="../images/DAG.jpg" width="400" height="300">
+
+<img src="../images/DAGExample.jpg" width="400" height="300">
+
+#### Topological ordering:
+- Given a DAG G = (V,E), V = {1,2,...,n}
+- Enumerate the vertices as {i1,i2,...,in} so that
+	- for any edge (j,k) in E,
+ 		- j appears before k in the enumeration
+- This is called topological sorting (Arranging the tasks in the order such that they maintain the constraints - please refer above example of related to buying gifts)
+
+##### Observation:
+- A directed graph with cycles cannot be topologically ordered
+- Path from j to k and from k to j means
+	- j must come before k
+	- k must come before j
+	- Impossible
+
+Every directed acyclic grpah can be topologically ordered.
+
+Strategy:
+- First list vertices with no incoming edges.
+- Then list vertices whose incoming neighbours are already listed.
+
+indegree(v) : number of edges into v
+outdegree(v): number of edges out of v
+
+- Every dag has at least one vertex with indegree 0
+	- Start with any v such that indegree(v) > 0
+	- Walk backwards to a predecessor so long as indegree > 0
+	- If no vertex has indegree 0, within n steps we will complete a cycle
+
+##### Algo:
+- Pick a vertex with indegree 0
+	- No dependencies
+	- Enumerate it and delete it from the graph
+- What remains is again a DAG!
+- Repeat the step above
+	- Stop when the resulting DAG is empty
+
+Algo implementation Example :
+
+<img src="../images/TS-ordering/img1.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img2.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img3.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img4.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img5.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img6.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img7.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img8.jpg" width="400" height="300">
+
+<img src="../images/TS-ordering/img9.jpg" width="400" height="300">
+
+Sudo Code:
+```
+function TopologicalOrder(G):
+	// find the indegrees of all vertexes
+	for vertex i = 1 to n:
+	  indegree[i] = 0
+	  for vertex j = 1 to n:
+			indegree[i]-=AdjacencyMatrix[j][i]
+	
+	for vertex i = 1 to n:
+		choose vertex  with indegree[j] = 0
+		enumerate j
+		indegree[j] = -1 -> indicating is processed and removed
+		// now reduce all the vertexes indegree which are linked to j
+		for vertex k = 1 to n:
+			if AdjacencyMatrix[j][k] == 1:
+				indegree[k]-=1
+```
+
+Time complexity:
+
+- Complexity is O(pow(n,2))
+    - Intializing indegree takes time O(pow(n,2))
+    - Loop n times to enumerate vertices
+        - Inside loop, identifying next vertex is O(n)
+        - Updating indegrees of neighbours is O(n))
+
+Time complexity can be reduced by using adjacency list.
+Using adjacency list:
+- Scan list once to compute indegrees - O(m)
+- Put all indegree 0 vertices in a queue
+- Enumerate head of queue and decrement indegree of neighbours - degree(j), overall O(m)
+	- If indegree becomes 0, add to queue.
+- Overall O(m+n)
+
+```
+function topologicalSort(G):
+	for vertex i = 1 to n:
+		indegree[i] = 0
+	for vertex i = 1 to n:
+		for (i,j) in E:
+			indegree[j]+=1
+	for vertex i = 1 to n:
+		if indegree[i] == 0:
+			add i to Queue
+	while Queue is not empty:
+		j = remove_head(Queue)
+		for (j,k) in E:
+			indegree[k]-=1
+			if indegree[k] == 0:
+				add k to Queue
+```
+
+#### DAGs: Longest Path:
+
+Problem Solving with DAGs and Topological sorting:
+
+<img src="../images/NoOfSems.jpg" width="400" height="300">
+
+Longest path in a DAG
+- Equivalent to finding longest path in DAG
+- If indegree(j) = 0, longest_path_to(j) = 0
+- if indegree(k) > 0, longest_path_to(k) is 1 + max( longest_path_to(j) ) - among all incoming neighbours j of k
+- if j is an incoming neighbour (j,k) in E
+	- j is enumerated before k in topological order
+- Hence, compute longest_path_to(i) in topological order.
+
+------
+
+- Let i1, i2, ..., i3 be a topological ordering of V
+- All neighbours of ik appear before it in this list
+- From left to right, compute longest_path_to(ik) as 1+ max(longest_path_to(ij)) among all incoming neighbours ij of ik
+- Can combine this calculation with topological sort
+
+
+Example for finding the longest path in combination with topological sorting:
+
+<img src="../images/LongestPathDAG/img1.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img2.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img3.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img4.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img5.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img6.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img7.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img8.jpg" width="400" height="300">
+<img src="../images/LongestPathDAG/img9.jpg" width="400" height="300">
+
+Algo:
+
+```
+function TopologicalOrderWithLongestPath(G):
+    for vertex i = 1 to n:
+        indegree[i] = 0
+        LPT[i] = 0
+        for vertex j = 1 to n:
+            indegree[i] = indegree[i] + A[j][i]
+    for vertex i = 1 to n:
+        choose j with indegree[j] = 0
+            enumerate j
+            indegree[j] = -1
+            for vertex k = 1 to n:
+                if A[j][k] == 1:
+                    indegree[k]-=1
+                    LPT[k] = max(LPT[k], 1+LPT[j])
+```
+
+This implementation has complexity O(pow(n,2))
+As before, we can use adjacency lists to improve the complexity to O(m+n)
+
+```
+function TopologicalOrder(G):
+    for vertex i = 1 to n:
+        indegree[i] = 0
+        LPT[i] = 0
+
+    for vertex i = 1 to n:
+        for (i,j) in E:
+            indegree[j]+=1
+    
+    for vertex i = 1 to n:
+        if indegree[i] == 0:
+            add i to queue
+    
+    while queue is not empty:
+        j = remove_head(queue)
+        for (j,k) in E:
+            indegree[k]-=1
+            LPT[k] = max(LPT[k], 1+MPT[k])
+            if indegree[k] == 0:
+                add k to queue
+```
+
+- Dependencies are naturally modelled using DAGs
+- Topological ordering lists vertices without violating dependencies.
+- Longest path in a DAG represent minimum number of steps to list all vertices in groups
+- Note: Computing the longest path with no duplicates vertices in an arbitary graph is not known to have any efficient algorithm
