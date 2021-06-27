@@ -27,6 +27,9 @@ Below both have their own advantages and disadvantages:
 
 **Strategy for finding a path connecting a source vertex to a target vertex**
 
+-Mark vertices that have been visited and keep track of vertices whose neighbours have already been explored.
+-Avoid going round indefinately in circles
+
 Start at the source vertex and start exploring using either of the below ways. 
 
 - Breadth first search
@@ -34,24 +37,63 @@ Start at the source vertex and start exploring using either of the below ways.
 - Depth first search
 	- Go as deep as possible for every vertex
 
-Mark vertices that have been visited and keep track of vertices whose neighbours have already been explored.
 
 #### Breadth first search:
 
-Explore the graph level by level
+- Explore the graph level by level.
+    - First visit vertices one step away.
+    - Then two steps away.
+    - Repeat this process till you have no more vertices.
+- Remember which vertices have been visited.
+- Also keep track of vertices visited, but whose neighbours are yet to be explored.
+
+BFS:
+- Array visited[i] records whether i has been visited.
+- When a vertex is visited for the first time, add it to a queue.
+- Explore vertices in the order they reach the queue.
+
+Exploring a vertex:
+```
+    for each edge(i,j):
+        if visited[j] == 0:
+            visited[j] = 1
+            append j to queue
+```
+
+- Initially, queue contains only source vertex
+- At each stage, explore vertex at the head of the queue.
+- Stop when the queue becomes empty.
+
+#### Algo:
+```
+function BFS(i):
+    for j = 1 to n:
+        visited[j] = 0
+    queue = []
+    visited[i] = 1
+    queue.append(i)
+    while queue is not empty:
+        j = extract_head(queue)
+        for each (j,k) in E:
+            if visited[k] == 0:
+                visited[k] = 1
+                queue.append(k)
+```
 
 Time complexity analysis:
-- Each vertex enters the queue exactly once. And queue is iterated. 
-- For each element we again scan for it's neighbours and we have to traverse the neighbour too.  
+- Each vertex enters Q exactly once.
+- If graph is connected, loop to process Q iterated n times. 
+    - For each j extracted from Q, need to examine all neighbours of j
+    - In adjacency matrix, scan row j: n entries. 
 - So, time complexity is O(pow(n,2)) - worst case
 
 Can we reduce it? - **Yes**
-- we can reduce it by using adjacency list instead of Adjacency matrix
+- we can reduce it by using adjacency list instead of Adjacency matrix.
 - Across the loop, each edge (i,j) is scanned twice. once when exploring i and again when exploring j.
-- So, each node will be explored twice. We,  can simply say that we are exploring all the edges once.
-- So, overall exploring the neighbors takes times O(m).
+- So, each node will be explored twice. We, can simply say that we are exploring all the edges once.
+- So, overall exploring the neighbors takes times O(m). (m - no of edges)
 - plus the algo again take O(n) for creating the visited array
-- It becomes - O(n+m)
+- It becomes - O(n+m) - considered to be best case.
 
 ##### Python
 ```python
@@ -191,6 +233,48 @@ class Solution {
 #### Find the path and level of a node from given ith vertex
 - Path that is being used to visit node j from i. 
 - parent array will be create and we have to backtrack it to find the path
+
+
+#### Algo:
+```
+function BFS(i):
+    for j = 1 to n:
+        visited[j] = 0
+        parent[j] = -1
+    Queue = [i]
+    visited[i] =1
+    while queue is not empty:
+        j = extract_head(queue)
+        for each (j,k) in E:
+            if visited[k] == 0:
+                visited[k] = 1
+                parent[k] = j
+                queue.append(k)
+```
+
+#### Recording distance:
+BFS can record how long the path is to each vertex.
+Insted of binary arrat visited[], keep integer array level[]
+level[j] = -1 initially
+level[j] = p means j is reached in p steps from i
+
+#### Algo:
+```
+function BFS(i):
+    for j = 1 to n:
+        level[j] = -1
+        parent[j] = -1
+    Queue = [i]
+    level[i] = 0
+    while queue is not empty:
+        j = extract_head(queue)
+        for each (j,k) in E:
+            if level[k] == -1:
+                level[k] = 1 + level[j]
+                parent[k] = j
+                queue.append(k)
+```
+
 ##### Python
 ```python
 # we get the path it followed to get to a target from ith vertex using parent array links
@@ -288,9 +372,30 @@ Depth first search instead of exploring all vertices level by level .Each time w
 - Start from i, visit a neighbour j.
 - Suspend the exploration of i and explore J instead.
 - Continue till you reach a vertex with no unexplored neighbours.
-- Backtrack to nearest suspended vertex that still has an unexplored neighbour and repeat the same process.
+- Backtrack to the nearest suspended vertex that still has an unexplored neighbour and repeat the same process.
+- Suspended vertices are stored in a stack.
+- Last in, first out (LIFO): most recently suspended is checked first.
 
-Time complexity: Same as bfs - O(m+n)
+
+- DFS is most natural to implement recursively
+- For each unvisited neighbour j for i, call DFS(j)
+- No need to explicitly maintain a stack
+- Stack is maintained implicitly by recursive calls
+
+#### Algo:
+```
+for j = 1 to n:
+    visited[j] = 0
+    parent[j] = -1
+function DFS(i):
+    visited[i] = 1
+    for each (i,j) in E: // Adj matrix - O(n)
+        if visited[j] == 0:
+            parent[j] = i
+            DFS(j)
+```
+
+Time complexity: Same as bfs - O(m+n) - If adjacency list is used.
 
 ##### Python
 ```python
@@ -643,7 +748,7 @@ Below is an example of DAG
 - Enumerate the vertices as {i1,i2,...,in} so that
 	- for any edge (j,k) in E,
  		- j appears before k in the enumeration
-- This is called topological sorting (Arranging the tasks in the order such that they maintain the constraints - please refer above example of related to buying gifts)
+- This is called topological sorting (Arranging the tasks in the order such that they maintain the constraints - please refer above example related to buying gifts)
 
 ##### Observation:
 - A directed graph with cycles cannot be topologically ordered
@@ -657,10 +762,8 @@ Every directed acyclic grpah can be topologically ordered.
 Strategy:
 - First list vertices with no incoming edges.
 - Then list vertices whose incoming neighbours are already listed.
-
-indegree(v) : number of edges into v
-outdegree(v): number of edges out of v
-
+-indegree(v) : Number of edges into v
+- outdegree(v): Number of edges out of v
 - Every dag has at least one vertex with indegree 0
 	- Start with any v such that indegree(v) > 0
 	- Walk backwards to a predecessor so long as indegree > 0
@@ -701,13 +804,13 @@ function TopologicalOrder(G):
 	for vertex i = 1 to n:
 	  indegree[i] = 0
 	  for vertex j = 1 to n:
-			indegree[i]-=AdjacencyMatrix[j][i]
+			indegree[i]+=AdjacencyMatrix[j][i]
 	
 	for vertex i = 1 to n:
 		choose vertex  with indegree[j] = 0
 		enumerate j
 		indegree[j] = -1 -> indicating is processed and removed
-		// now reduce all the vertexes indegree which are linked to j
+		// now reduce indegree of all the vertices which are linked to j
 		for vertex k = 1 to n:
 			if AdjacencyMatrix[j][k] == 1:
 				indegree[k]-=1
@@ -723,7 +826,7 @@ Time complexity:
 
 Time complexity can be reduced by using adjacency list.
 Using adjacency list:
-- Scan list once to compute indegrees - O(m)
+- Scan the list for computing the indegrees - O(m)
 - Put all indegree 0 vertices in a queue
 - Enumerate head of queue and decrement indegree of neighbours - degree(j), overall O(m)
 	- If indegree becomes 0, add to queue.
