@@ -9,7 +9,7 @@
 - DFS numbering can reveal many interesting features.
 
 Adding edge weights:
-- Ticker price on a flight sector.
+- Ticket price on a flight sector.
 - Tolls on highway segment.
 - Distance travelled betweem two station.
 - Typical time between two locations during peak hour traffic.
@@ -119,7 +119,7 @@ function shortestPaths(s):
 
 Eaxmple & Implentation: Link
 
-This is algo comes under **greedy algorithms.**
+This algo comes under **greedy algorithms.**
 
 - Algorithm makes a sequence of choices.
 - Next choice is based on "current best value".
@@ -130,9 +130,9 @@ This is algo comes under **greedy algorithms.**
 - Most times, greedy approach fails.
     - Current best choice may not be globally optimal.
 
-#### How correct is this algo **Correctness**
+#### How correct is this algo - **Correctness**
 
-<img src="../images/shortestpath/dijkstraCorrectness.jpg" width="400" height="300">
+<img src="../images/shortestpath/DijkstraCorrectness.jpg" width="400" height="300">
 
 #### Complexity
 - Outer loop runs n times.
@@ -155,7 +155,9 @@ Can we reduce it? - **yes**
 
 #### Limitations
 
-<img src="../images/shortestpath/dijkstraCorrectness.jpg" width="400" height="300">
+What if we have negative weights?
+
+<img src="../images/shortestpath/DijkstraCorrectness.jpg" width="400" height="300">
 
 #### Why negative weights?
 
@@ -216,7 +218,7 @@ update(j,k):
 
 - Support the shortest path from s to t is
 -     s -> v1 -> v2 -> .... > vm -> t
-- If our update sequence includes ...,update(s,v1)...,update(v1,v2),...,update(v2,v3),......update(vm,t),..in that orde, distance(t) will be computed correctly
+- If our update sequence includes ...,update(s,v1)...,update(v1,v2),...,update(v2,v3),......update(vm,t),..in that order, distance(t) will be computed correctly
 - if distance(j) is correct and j is the second-last node on shortest path to k, distance(k) is correct after update(j,k).
 
 
