@@ -248,5 +248,279 @@ Implementation: https://www.geeksforgeeks.org/bellman-ford-algorithm-dp-23/
     - Adjacency matrix - O(pow(n,3))
     - Adjacency list - O(mn)
 
+---------------
+
+### All shortest paths
+- Negative weight are allowed, but not negative cycles.
+- Shortest paths are still well defined
+- Bellman-Ford algorithm computes single-source shortest paths
+- Can we compute shortet paths between all pairs of vertices?
+- Shortest paths will never loop
+    - Never visit the same verte twice
+    - At most length n-1
+- Use this to inductively explore all possible shortest paths efficicently
+
+#### Inductively exploring shortest paths
+- Simplest shortest path from i to j is a direct edge (i,j)
+- General case:
+    - i -> v1 -> v2 -> v3 -> .... -> vm -> j
+    - All of (v1, v2,v3,...,vm) are distinct and different from i to j
+    - Restrict what vertices can appear in this set.
+
+**Anlaysis:**
+- Recall that V = {1,2,...,n}
+- Wk(i,j): weight of shortest path from i to j among paths that only go via {1,2,...,k}
+    - {k+1, ..., n } cannot appear on the path
+    - i, j themselves need to be in {1,2,....,k}
+- W0(i,j): direct edges
+    - {1,2,3,...,n} cannot appear betweeen i and j
+- From Wk-1(i,j) to Wk(i,j)
+    - Case 1: Shortest path via {1,2,...,k} does not use vertex k
+        - Wk(i,j) = Wk-1(i,j)
+    - Case 2: Shortest path via {1,2..k} does go via k
+        - k can appear only once along this path
+        - Break up as paths i to k and k to j, each via {1,2,..,k-1}
+        - Wk(i,j) = Wk-1(i,k) + Wk-1(k,j)
+- Conclusion: Wk(i,j) = min(Wk-1(i,j), Wk-1(i,k) + Wk-1(k,j))
+
+
+#### Floyd Warshall algorithm
+- W0 is adjacency matrix with edge weights
+    - W0(i,j) = weight(i,j) if there is an edge (i,j), otherwise infinate
+- For k in 1,2,..,n
+    - Compute Wk(i,j) from Wk-1 using Wk(i,j) = min(Wk-1(i,j), Wk(i,k)+Wk-1(k,j))
+- Wn contains weights of shortest path for all pairs.
+
+#### Algo:
+```
+Function FloydWarshall:
+    for vertex i = 1 to n:
+        for vertex j = 1 to n:
+            W[i][j][0] = infinite
+    for each edge (i,j) in E:
+        W[i][j][0] = weight(i,j)
+    
+    for k = 1 to n:
+        W[i][j][k] = min(W[i][j][k-1], W[i][k][k-1] + W[k][j][k-1])
+```
+
+Example:
+
+<img src="../images/shortestpath/Floyd/Floyd1.jpg" width="400" height="300">
+
+<img src="../images/shortestpath/Floyd/Floyd2.jpg" width="400" height="300">
+
+#### Complexity Analysis:
+- Easy to see that the compleity is O(pow(n,3))
+    - n iterations.
+    - In each iteration, we update pow(n,2) entries.
+- A word about space complexity
+    - Navie Implementation is O(pow(n,3)) - W[i][j][k]
+    - Only need two "slices" at a time, W[i][j][k-1] and W[i][j][k]
+    - Space requirement reduces to O(pow(n,2))
+
+Historical remarks:
+
+- Floyd-Warshall is a hybrid name
+- Warshall originally proposed an algorithm for transitive closure
+    - Generating path matrix P[i][j] from adjacency matri A[i][j]
+- Floyd adapted it to compute shortest paths.
+
+Computing paths:
+- A(i,j) = 1 if there is an edge from i to j
+- Want P(i,j) = 1 if there is a pth from i to j
+- Iteratively compute Pk(i,j) = 1 if there is a path from i to j where all intermediate vertices are in {1,2,...,k}
+    - {k+1,...,n} cannot appear on the path
+    - i, j themselves need not be in {1,2,...,k}
+- P0(i,j) = A(i,j) : direct edges
+    - {1,2,..,n} cannot appear between i and j
+
+
+Inductively computing P[i][j]
+- From Pk-1(i,j) to Pk(i,j)
+- Case 1: There is a path from i to j without using vertex k
+    - Pk(i,j) = Pk-1(i,j)
+- Case 2: Path via {1,2,...,k} does go via k
+    - k can appear only once along this path
+    - Break up as paths i to k and k to j each via {1,2,..k-1}
+    - Pk(i,j) = Pk-1(i,k) and Pk-1(k,j)
+- Conclusion: Pk(i,j) = Pk-1(i,j) or (Pk-1(i,k) and Pk-1(k,j))
+
+Warshall's algorithm
+```
+function Warshall:
+    for i = i to n:
+        for j = 1 to n:
+            p[i][j][0] = False
+    for each edge (i,j) in E:
+        P[i][j][0] = True
+    for k = 1 to n
+        P[i][j][k] = P[i][j][k-1] or (P[i][k][k-1] and p[k][j][k-1])
+```
+
+--------------
+
+### Minimum cost spanning trees
+
+Example:
+- District hit by a cyclone, damaging the roads
+- Government sets to work to restore the roads.
+- Priorty is to ensure that all parts of the district can be reached
+- What set of roads should be restored first
+
+
+<img src="../images/shortestpath/spanningtree1.jpg" width="400" height="300">
+
+<img src="../images/shortestpath/spanningtree2.jpg" width="400" height="300">
+
+#### Facts about trees:
+Definition: A tree is a connected acyclic graph
+- Fact 1: A tree on n vertices has exactly n-1 edges
+    - Start with a tree and delete edges
+    - Initially one single component
+    - eleting an edge mut split a component into two
+    - After n-1 edge deletions, n components, each an isolated vertex
+- Fact 2: Adding an edge to a tree must create a cycle
+    - Suppose we add an edge (i,j)
+    - Tree is connected, so there is alreay a path p from i to j
+    - New edge (i,j) plus path p creates a cycle
+- Fact 3: In a trees, every pair of nodes is connected by a unique path
+    - If there are two path from i to j, there must be a cycle
+
+Any two of the following facts about a grpah implies the third:
+- G is connect
+- G is acyclic
+- G has n-1 edges
+
+#### Two natural strategies
+- Start with smallest edge and grow it into a tree
+    - Prim's Algorithm - [Example](../hand-written-notes-and-examples/prims-algo-example.pdf)
+- Scan edges in ascending order of cost and connect components to form a tree.
+    - Kruskal's Algorithm - [Example](../hand-written-notes-and-examples/kruskals-algo-example.pdf)
+
+
+### Prim's Algorithm
+
+- wewighted undirected graph, G = (V, E, w)
+    - Assume G is connected
+- Identify a spanning tree with minimum weight
+    - Tree connecting all vertices in V
+- Strategy:
+    - Start with minimum cost edge
+    - Keep etending the tree with smallest edge
+
+#### Basic Algo:
+```
+algo Prim:
+    let e = (i,j) be minimum cost edge in E
+    TE = [e]
+    TV = {i,j}
+    for i = 3 to n:
+        choose edge f = (u,v) of minimum cost
+            such that u in TV and v not in Tv
+        TE.append(f)
+        TV.append(v)
+    return TE
+```
+
+#### Fight for correctness:
+- Prims algo is a greedy algorithm
+    - Like Dijkstra's single source shortest path
+- A local heuristic is used to decide which edge to add next to the tree
+- Choice made are never reconsidered
+- Why does this sequence of local choices achieve a global optimum?
+
+##### Minimum separator lemma
+- Let V be partitioned into two non-empty sets U and W = V-U
+- Let e = (u,w) be minimum cost edge with u in U and w in W
+- Assume all edges have different weights (relax this condition later)
+- Then every minimum cost spanning tree must include e
+
+<img src="../images/shortestpath\MinimumSpanning/minimumseparatorlemma.jpg" width="400" height="300">
+
+<img src="../images/shortestpath\MinimumSpanning/minimumseparatorlemma1.jpg" width="400" height="300">
+
+- Correctness follows directly from minimum separator lemma
+- At each stage, Tv and V-Tv form a non-trivial partition of V
+- The smallest edge connecting TV to V-TV mut belong to every minimum cost spanning tree
+    - This is the edge that the algo picks
+
+#### Further observation:
+- Need not start edge overall
+- For any vertex v, smallest edge  sttache to v must be in the minimum cost spanning tree
+- Consider partition {v}, V-{v}
+- Can start with any such edge
+
+#### Revisit the Prims algo once more.
+- Start with TV = {s} for any vertex s
+- For each vertex v outside TV, maintain
+    - Distance_TV(v), smallest edge weight from v to TV
+    - Neighbour_TV(v), nearest neighbour of v in TV
+- At each stage, add to TV("burn") vertex u with smallest Distance_TV(u)
+    - update Distance_TV(v), neighbour_TV(v) for each neighbour of u
+- Very similar to Dijkstra's algorithm
+
+### Algo
+```
+function Prim:
+    for i to n:
+        visited[i] = False
+        Nbr_Tv[i] = -1
+        Dit_Tv[i] = infinity
+    TE = []
+    visited[1] = True
+    for each edge(1,j):
+        Nbr_TV[j] = 1
+        Dist_TV[j] = weight(1,j)
+    for i = 2 to n:
+        Choose u such that visited[u] == False and Dist_TV[u] is minimum
+        visited[u] = True
+        TE.append((u, Nbr_TV[u]))
+        for each edge (u,v) with visited[v] == False:
+            if Dist_TV[v] > weight(u,v):
+                Dist_TV[v] = weight(u,v)
+                Nbr_TV[v] = u
+```
+
+Algo implementation example
+[Example](../hand-written-notes-and-examples/prims-algo-imple-example.pdf)
+
+#### Compleity analysis
+- Similar to Dijktra's algorithm
+    - Outer loop runs n times
+    - In each iteration, we add one vertex to the tree
+- O(n) scan to find nearest vertex to add
+- Each time we add a vertex v, we have to scan all it's neighbours to update distances.
+    - O(n) scan of adjacency matrix to find all neighbours
+- Overall O(pow(n,2))
+
+Can we reduce? - Yes
+- Moving from adjacency matrix to adjacency lilst
+    - Across n iterations, O(m) to update neighbours
+- Maintian distance information in a heap
+    - Finding minimum and updating is O(log n)
+- Overall O(n log n + m log n) = O((m+n) log n)
+- n times finding min vertex takes nlog n, updating m edges takes mlog n
+
+### What if not all edge weights are same
+- We assumed edge weights are istinct
+- Duplicate edge weight?
+    - Fix an overall ordering {1,2,...,m} of edge
+    - Edge e = ((u,v),i} is smaller than f = ((u', v'),j) if 
+        - weight(e) < weight(f)
+        - weight(e) < weight(f) and i < j
+- if edge weights repeat, the minimum cost spanning tree is not unique
+    - choose u such that Dist_TV(u) is minimum
+- Different choices generate different trees
+    - Different ways of ordering eges {1,2,...,m}
+- In general, number of possible minimum cost spanning trees is exponential
+    - Greedy algorithm efficiently picks out one of them.
+-------------------
+
+### Kruskal's algorithm
+
+Strategy - 2:
+- Order edges in ascending order by weights
+- Keep adding edges to combine components
 
 
