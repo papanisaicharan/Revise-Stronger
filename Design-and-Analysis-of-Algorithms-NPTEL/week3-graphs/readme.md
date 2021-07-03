@@ -27,8 +27,8 @@ Below both have their own advantages and disadvantages:
 
 **Strategy for finding a path connecting a source vertex to a target vertex**
 
--Mark vertices that have been visited and keep track of vertices whose neighbours have already been explored.
--Avoid going round indefinately in circles
+- Mark vertices that have been visited and keep track of vertices whose neighbours have already been explored.
+- Avoid going round indefinately in circles
 
 Start at the source vertex and start exploring using either of the below ways. 
 
@@ -360,7 +360,7 @@ public class Main {
 ```
 
 - If we add this level predicate to Breadth first search, then it actually gives us the shortest path to each node in terms of number of edges.
-- Now, in general, we will see that, if you do not have the uniform cost, we have different cost on edges, then the shortest path need not be just the shortest in term to number of edges. We have to add the cost associated each path. these are called weighted graphs.
+- Now, in general, we will see that, if you do not have the uniform cost, we have different cost on edges, then the shortest path need not be just the shortest in term to number of edges. We have to add the cost associated to each path. these are called weighted graphs.
 
 
 ------------
@@ -571,7 +571,7 @@ Steps to find out connected components:
 - Now pick an unvisted node and repeat above process again.
 - continue this till you have marked all the nodes as visited.
 
-Either you can label each vertex to the component number it belongs to or print it component wish - Mold your output as per requirement.
+Either you can label each vertex to the component number it belongs to or print it component wise - Mold your output as per requirement.
 
 ##### Python
 ```python
@@ -650,7 +650,7 @@ Procedure for finding cycles:
 
 - Run BFS on a graph which has cycles then you will find that some edges are not used, because when you try to explore those edges, you find that target vertex is already visited.
 
-A connected acyclic graph is termed as Tree.
+**A connected acyclic graph is termed as Tree.**
 
 So, in any graph if we explore BFS, the edges that are actually used will form a tree and this called a BFS tree. and remaining edges are called non tree edges
 
@@ -692,21 +692,26 @@ print("post : ",post )
 ```Java
 ```
 
+[geeksForGeeks](https://www.geeksforgeeks.org/check-given-graph-tree/)
+
 Now we perform DFS on the below image, each connected component will generate a DFS tree.
 And each non-tree edge will generate a cycle.
 
 <img src="../images/DFS-pre-post-non-tree.jpg" width="400" height="300">
 
-Applying dfs on directed graph.
-Apart from tree edge, we have non-tree edges.
+### Directed graphs
+
+Applying dfs on the directed graph. Apart from tree edges, we also have non-tree edges.
+
 And these non-tree edges are again divided into 3 types:
-- Forward edge: these edges go from top level nodes to lower level nodes
-- Back edges: this is opposite of forward edges. Goes from lower level to higher level
-- cross edge: these edges goes from one child tree to other child tree. That too, from higher level to lower level. refer the image for clear understanding
+- **Forward edge**: these edges go from top level nodes to lower level nodes
+- **Back edges**: this is opposite of forward edges. Goes from lower level to higher level
+- **cross edge**: these edges goes from one child tree to other child tree. That too, from higher level to lower level. refer the image for clear understanding
 
 <img src="../images/DFS-pre-post-non-tree-directed.jpg" width="400" height="300">
 
 Now Which one of these will contribute for cycles?
+
 Ans: A directed graph has a cycle if and only if DFS reveals a back edge
 
 Can classify the type of edge using pre and post numbers:
@@ -719,9 +724,11 @@ Can classify the type of edge using pre and post numbers:
 
 Directed graphs without cycles are useful for modelling dependencies. example: Courses with prerequisites etc
 
+Check [geeksForGeeks](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/)
+
 #### Connectivity in directed graphs:
 Strongly connected: If there is a path from i to j and path from j to i. then it is strongly connected
-- Dierected graph can be decomposed into strongly connected components (SCCs)
+- Directed graph can be decomposed into strongly connected components (SCCs)
     - All pairs of nodes in an SCC are strongly connected.
     - <img src="../images/SCCs.jpg" width="400" height="300">
 
@@ -735,7 +742,7 @@ A number of other structural properties can be inferred from DFS numbering
 - G = (V,E), a directed graph
 - No cycles:
 	- No directed path from any v in V back to itself
-- Such a grpah are called DAGs
+- Such a graph is called DAG
 
 Below is an example of DAG
 
@@ -762,20 +769,22 @@ Every directed acyclic grpah can be topologically ordered.
 Strategy:
 - First list vertices with no incoming edges.
 - Then list vertices whose incoming neighbours are already listed.
--indegree(v) : Number of edges into v
+- indegree(v) : Number of edges into v
 - outdegree(v): Number of edges out of v
-- Every dag has at least one vertex with indegree 0
+- **Every dag has at least one vertex with indegree 0**
 	- Start with any v such that indegree(v) > 0
 	- Walk backwards to a predecessor so long as indegree > 0
 	- If no vertex has indegree 0, within n steps we will complete a cycle
 
 ##### Algo:
+```
 - Pick a vertex with indegree 0
 	- No dependencies
 	- Enumerate it and delete it from the graph
 - What remains is again a DAG!
-- Repeat the step above
+- Repeat the above step
 	- Stop when the resulting DAG is empty
+```
 
 Algo implementation Example :
 
@@ -804,13 +813,13 @@ function TopologicalOrder(G):
 	for vertex i = 1 to n:
 	  indegree[i] = 0
 	  for vertex j = 1 to n:
-			indegree[i]+=AdjacencyMatrix[j][i]
+		indegree[i]+=AdjacencyMatrix[j][i]
 	
 	for vertex i = 1 to n:
 		choose vertex  with indegree[j] = 0
 		enumerate j
-		indegree[j] = -1 -> indicating is processed and removed
-		// now reduce indegree of all the vertices which are linked to j
+		indegree[j] = -1 -> indicating that this is processed and removed
+		// now reducing the indegree of all the vertices which are linked to j
 		for vertex k = 1 to n:
 			if AdjacencyMatrix[j][k] == 1:
 				indegree[k]-=1
