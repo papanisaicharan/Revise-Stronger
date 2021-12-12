@@ -1,3 +1,12 @@
+- Example flight routes - graph problem
+- xerox: scheduling the xerox tasks using greedy approaches. (optimally select one and try for n-1 items again - based on shortest processing time or earliest deadline)
+- Make sure the supproblems are computed only once in a recursive solution.
+- Time and space complexity (sequential speed of cpu is stuck 10 power 8 operation per second, so it is alway efficient to check input size of the problem)
+
+
+![image](https://user-images.githubusercontent.com/25131591/145720534-bb5b8a57-00b1-40dd-8015-af6585358c1d.png)
+
+
 ### Python
 
 ```python
