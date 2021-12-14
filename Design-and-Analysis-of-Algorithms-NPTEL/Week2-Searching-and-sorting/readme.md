@@ -5,6 +5,8 @@
 #### Searching
 Time Complexity: O(n) - unsorted array.
 
+https://www.cs.usfca.edu/~galles/visualization/Search.html
+
 ###### Python
 ```python
 def search(arr, k):
@@ -24,6 +26,8 @@ public static int search(int[] arr, int k){
 
 #### Binary search
 Time complexity - O(log n) - sorted array.
+
+https://www.cs.usfca.edu/~galles/visualization/Search.html
 
 ###### Python
 ```python
@@ -56,6 +60,10 @@ public int binSearch(int[] nums, int k, int l, int r){
         return -1;
 }
 ```
+
+https://www.geeksforgeeks.org/stability-in-sorting-algorithms/
+
+https://www.cs.usfca.edu/~galles/visualization/ComparisonSort.html
 
 #### Selection Sort
 - Stability: By default not stable, but can be made stable
@@ -139,6 +147,70 @@ def sortArray(self, nums: List[int]) -> List[int]:
 }
 ```
 
+##### Special
+LinkedList insertion sort:
+
+###### Python
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def insertionSortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode()
+        prev = dummy
+        curr = head
+        next = None
+        
+        while curr != None:
+            next = curr.next
+            while prev.next != None and prev.next.val < curr.val:
+                prev = prev.next
+            
+            curr.next = prev.next
+            prev.next = curr
+            
+            prev = dummy
+            curr = next
+            
+        return dummy.next
+```
+##### Java
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode insertionSortList(ListNode head) {
+        ListNode dummy = new ListNode();
+        ListNode prev = dummy;
+        ListNode curr = head;
+        ListNode next;
+        
+        while(curr != null){
+            next = curr.next;
+            while(prev.next != null && prev.next.val < curr.val) prev = prev.next;
+            curr.next = prev.next;
+            prev.next = curr;
+            
+            prev = dummy;
+            curr = next;
+        }
+        
+        return dummy.next;
+    }
+}
+```
+
 #### Bubble sort
 - Sorting In Place
 - Stable: Yes
@@ -190,6 +262,11 @@ We have few shortcomes of merge sort in terms of extra space for merging - new s
 
 Merge Sort with extra space of O(n)
 
+###### Drawbacks:
+- Slower comparative to the other sort algorithms for smaller tasks.
+- Merge sort algorithm requires an additional memory space of 0(n) for the temporary array.
+- It goes through the whole process even if the array is sorted.
+
 ##### Python
 ```python
 def merge(A, m, B, n, C):
@@ -223,7 +300,7 @@ def mergeSort(A, left, right, B):
         merge(L, mid-left, R, right-mid, B)
 ```
 
-Merge sort with no extra space
+Merge sort with no extra space, except O(n) space.
 
 ```python
 def mergeSort(self, nums):
@@ -256,6 +333,62 @@ def mergeSort(self, nums):
                 j+=1
                 k+=1
 ```
+
+##### Java
+```java
+class Solution {
+    public int[] sortArray(int[] arr) {
+        mergesort(arr, 0, arr.length-1);
+        return arr;
+    }
+    
+    public void mergesort(int[] arr, int i, int j){
+        if(i < j){
+            int mid = i + (j - i)/2;
+            mergesort(arr, i, mid);
+            mergesort(arr, mid+1, j);
+            
+            merge(arr, i, mid, j);
+        }
+    }
+    
+    public void merge(int[] arr, int l, int m, int r){
+        int ll = m - l + 1;
+        int rl = r - m;
+        int[] L = new int[ll];
+        int[] R = new int[rl];
+        for(int i = 0; i < ll; i++){
+            L[i] = arr[i+l];
+        }
+        for(int i = 0; i < rl; i++){
+            R[i] = arr[i+m+1];
+        }
+        int i = 0, j = 0, k = l;
+        while(i < ll && j < rl){
+            if(L[i] < R[j]){
+                arr[k] = L[i];
+                i++;
+            }else{
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+        while(i < ll){
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+        while(j < rl){
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+}
+```
+
+Try solving this: https://leetcode.com/problems/sort-an-array/submissions/
 
 
 #### Quick sort
