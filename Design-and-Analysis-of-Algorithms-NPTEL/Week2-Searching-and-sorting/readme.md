@@ -339,36 +339,33 @@ def mergeSort(self, nums):
 
 ##### Java
 ```java
-class Solution {
-    public int[] sortArray(int[] arr) {
-        mergesort(arr, 0, arr.length-1);
-        return arr;
-    }
+// "static void main" must be defined in a public class.
+public class MergeSort {
     
-    public void mergesort(int[] arr, int i, int j){
-        if(i < j){
-            int mid = i + (j - i)/2;
-            mergesort(arr, i, mid);
-            mergesort(arr, mid+1, j);
-            
-            merge(arr, i, mid, j);
+    public void sort(int[] arr, int l, int r){
+        if(r > l){
+            int mid = l + (r-l)/2;
+            sort(arr, l, mid);
+            sort(arr, mid+1, r);
+
+            merge(arr, l, mid, r);
         }
     }
     
-    public void merge(int[] arr, int l, int m, int r){
-        int ll = m - l + 1;
-        int rl = r - m;
-        int[] L = new int[ll];
-        int[] R = new int[rl];
-        for(int i = 0; i < ll; i++){
+    public void merge(int[] arr, int l, int mid, int r){
+        int l1 = mid - l + 1;
+        int l2 = r - mid;
+        int[] L = new int[l1];
+        int[] R = new int[l2];
+        for(int i = 0; i < l1; i++){
             L[i] = arr[i+l];
         }
-        for(int i = 0; i < rl; i++){
-            R[i] = arr[i+m+1];
+        for(int i = 0; i < l2; i++){
+            R[i] = arr[i+mid+1];
         }
         int i = 0, j = 0, k = l;
-        while(i < ll && j < rl){
-            if(L[i] < R[j]){
+        while(i < l1 && j < l2){
+            if(L[i] <= R[j]){
                 arr[k] = L[i];
                 i++;
             }else{
@@ -377,16 +374,47 @@ class Solution {
             }
             k++;
         }
-        while(i < ll){
+        while(i < l1){
             arr[k] = L[i];
             i++;
             k++;
         }
-        while(j < rl){
+        while(j < l2){
             arr[k] = R[j];
             j++;
             k++;
         }
+    }
+    
+    static void printArray(int arr[])
+    {
+        int n = arr.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(arr[i] + " ");
+        System.out.println();
+    }
+    
+    static void printArray(int arr[], int l, int r)
+    {
+        int n = arr.length;
+        for (int i = l; i < r+1; ++i)
+            System.out.print(arr[i] + " ");
+        System.out.println();
+    }
+  
+    // Driver code
+    public static void main(String args[])
+    {
+        int arr[] = { 12, 11, 13, 5, 6, 7 };
+  
+        System.out.println("Given Array");
+        printArray(arr);
+  
+        MergeSort ob = new MergeSort();
+        ob.sort(arr, 0, arr.length - 1);
+  
+        System.out.println("\nSorted array");
+        printArray(arr);
     }
 }
 ```
