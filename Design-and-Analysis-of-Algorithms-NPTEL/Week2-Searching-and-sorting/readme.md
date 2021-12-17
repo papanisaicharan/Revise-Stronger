@@ -397,7 +397,10 @@ Try solving this: https://leetcode.com/problems/sort-an-array/submissions/
 #### Quick sort
 - Time complexity: O(n log n) (Solve below by repeated substitution to get this time complexity)
 - recurrence relation: T(n) = 2T(n/2) + θ(n)
-- - https://www.geeksforgeeks.org/quick-sort/
+- https://www.geeksforgeeks.org/quick-sort/
+- O(n sqr) is the array is already sorted
+- Various way of picking the pivots - first, last, median etc but randomized pivot gives better time complexity
+- Although this algo is seems recursive, it can be solved in an iterative fashion by storing left and right halfs in a stack(store indexes only). In every iteration pull out one and push two half after placing pivot in it's place. [explore more on the internet]
 
 ```python
 # forward partitioning
