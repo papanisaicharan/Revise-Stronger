@@ -251,6 +251,9 @@ class Solution {
 
 **Can we perform better than O(n**2)? - Yes.**
 
+It is better to learn master method for calculating the master method.
+https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)
+
 #### Merge Sort
 - Divide and Conquer
 - Time complexity: O(n log n)
@@ -392,8 +395,9 @@ Try solving this: https://leetcode.com/problems/sort-an-array/submissions/
 
 
 #### Quick sort
-- Time complexity: O(n log n)
+- Time complexity: O(n log n) (Solve below by repeated substitution to get this time complexity)
 - recurrence relation: T(n) = 2T(n/2) + θ(n)
+- - https://www.geeksforgeeks.org/quick-sort/
 
 ```python
 # forward partitioning
@@ -423,4 +427,4 @@ Try solving this: https://leetcode.com/problems/sort-an-array/submissions/
 ```
 
 #### Stable sorting: 
-The second sorting should not disturb the order of the first sorting . So, this is called stable sorting.
+The second sorting should not disturb the order of the first sorting. 
