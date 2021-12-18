@@ -148,7 +148,14 @@ def sortArray(self, nums: List[int]) -> List[int]:
 ```
 
 ##### Special
+
+https://leetcode.com/problems/insertion-sort-list/
+
 LinkedList insertion sort:
+- The strategy is almost similar to dealing with array.
+- Create a dummy linked list with pointer dummy and prev (this pointer will be used to traversing the linked list to place a new element in it's correct position)
+- curr and next points the new element and new elements next element that needs to be inserted into sorted array.
+- Now follow to code with comments
 
 ###### Python
 ```python
@@ -159,22 +166,29 @@ LinkedList insertion sort:
 #         self.next = next
 class Solution:
     def insertionSortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # pointer to sorted list
         dummy = ListNode()
+        # pointer for traversing the sorted list
         prev = dummy
+        # pointer to unsorted part
         curr = head
+        # pointer to next element in unsorted part
         next = None
         
         while curr != None:
+            # next element
             next = curr.next
+            # traverse in sorted part and find a correct position to insert it.
             while prev.next != None and prev.next.val < curr.val:
                 prev = prev.next
-            
+            # insert it into sorted part
             curr.next = prev.next
             prev.next = curr
-            
+            # move prev point to start of sorted part
             prev = dummy
+            # new curr part
             curr = next
-            
+        # return sorted part
         return dummy.next
 ```
 ##### Java
