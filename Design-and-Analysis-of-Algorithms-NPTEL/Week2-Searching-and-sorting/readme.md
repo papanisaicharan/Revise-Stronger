@@ -230,6 +230,7 @@ class Solution {
 - Stable: Yes
 - yet to go through :[https://www.geeksforgeeks.org/bubble-sort/](https://www.geeksforgeeks.org/bubble-sort/)
 - Time complexity - O(n**2)
+- Can be optimized? yes - track the number of swaps in first iteration, if no swaps happens then it is already sorted.
 
 ###### Python
 ```python
