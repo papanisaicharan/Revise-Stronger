@@ -440,6 +440,7 @@ Try solving this: https://leetcode.com/problems/sort-an-array/submissions/
 #### Quick sort
 - Time complexity: O(n log n) (Solve below by repeated substitution to get this time complexity)
 - recurrence relation: T(n) = 2T(n/2) + θ(n)
+- Not a stable sorting, but can be made stable.
 - https://www.geeksforgeeks.org/quick-sort/
 - O(n sqr) is the array is already sorted
 - Various way of picking the pivots - first, last, median etc but randomized pivot gives better time complexity
@@ -471,6 +472,81 @@ Try solving this: https://leetcode.com/problems/sort-an-array/submissions/
         # there is another way where both green and yellow move in 
         # opposite direction - both actually results same complexity
 ```
+
+```java
+// Java implementation of QuickSort 
+import java.io.*;
+  
+class QuickSort{
+      
+    // A utility function to swap two elements
+    static void swap(int[] arr, int i, int j)
+    {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+  
+    /* This function takes first element as pivot, places
+       the pivot element at its correct position in sorted
+       array, and places all smaller (smaller than pivot)
+       to left of pivot and all greater elements to right
+       of pivot */
+    static int partition(int[] arr, int low, int high)
+    {
+        int pivot = low;
+        int green = low+1, red = low+1;
+        while(red < high+1){
+            if(arr[red] < arr[pivot]){
+                swap(arr, green, red);
+                green++;
+            }
+            red++;
+        }
+        swap(arr, green-1, pivot);
+        return green-1;
+    }
+  
+    /* The main function that implements QuickSort
+              arr[] --> Array to be sorted,
+              low --> Starting index,
+              high --> Ending index
+     */
+    static void quickSort(int[] arr, int low, int high)
+    {
+        if(high > low){
+            int pivot = partition(arr, low, high);
+            quickSort(arr, low, pivot - 1);
+            quickSort(arr, pivot+1, high);
+        }
+    }
+  
+    // Function to print an array 
+    static void printArray(int[] arr, int size)
+    {
+        for(int i = 0; i < size; i++)
+            System.out.print(arr[i] + " ");
+
+        System.out.println();
+    }
+  
+    // Driver Code
+    public static void main(String[] args)
+    {
+        int[] arr = { 10, 7, 8, 9, 1, 5 };
+        int n = arr.length;
+
+        quickSort(arr, 0, n - 1);
+        System.out.println("Sorted array: ");
+        printArray(arr, n);
+    }
+}
+```
+
+For more exploration:
+- https://www.geeksforgeeks.org/3-way-quicksort-dutch-national-flag/
+- https://www.geeksforgeeks.org/stable-quicksort/
+
 
 #### Stable sorting: 
 The second sorting should not disturb the order of the first sorting. 
