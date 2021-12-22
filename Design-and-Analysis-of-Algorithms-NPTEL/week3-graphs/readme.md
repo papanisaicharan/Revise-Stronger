@@ -8,6 +8,7 @@
 		- Traveling by flight from one city to other
 	- Undirected
 		- Graph coloring problem: no neigbour should have the same color
+		- In general, 4 colors will be sufficient to color any graph.
 		
 
 #### Graph representation
@@ -18,6 +19,7 @@ Below both have their own advantages and disadvantages:
 	- Easier to say if j is neighbour of i. 
 	- Takes more space
 	- More time to find out all neighbours of i
+	- for an undirected graph, we can only consider upper rectangle to indicate the edges.
 	- <img src="../images/adjacencymatrix.png" width="400" height="300">
 - Adjacency list
 	- More time to find out whether j is a neighbour of i.
@@ -118,6 +120,12 @@ def dfs(self, i, adjacencyList):
 adjacencyList = {0: [1, 2], 1: [2], 2: [0, 3], 3: [3]}
 dfs(2, adjacencyList)
 ```
+
+https://www.geeksforgeeks.org/queue-interface-java/
+
+https://leetcode.com/tag/breadth-first-search/
+
+
 ##### Java
 ```java
 // "static void main" must be defined in a public class.
@@ -360,7 +368,7 @@ public class Main {
 ```
 
 - If we add this level predicate to Breadth first search, then it actually gives us the shortest path to each node in terms of number of edges.
-- Now, in general, we will see that, if you do not have the uniform cost, we have different cost on edges, then the shortest path need not be just the shortest in term to number of edges. We have to add the cost associated to each path. these are called weighted graphs.
+- Now, in general, we will see that, **if you do not have the uniform cost, we have different cost on edges, then the shortest path need not be just the shortest in term to number of edges. We have to add the cost associated to each path. these are called weighted graphs.**
 
 
 ------------
@@ -466,10 +474,12 @@ Path discovered by Dfs is not the shortest path, then what are it's uses.
 	- Computing the pre and post values of each node.
 	- pre denotes the step at which this node is visited while exploring.
 	- post denotes the step at which this node is visited while finishing the exploring of this node.
+	- https://www.geeksforgeeks.org/printing-pre-and-post-visited-times-in-dfs-of-a-graph/
 	- <img src="../images/pre-post-values.png" width="400" height="300">
     - These pre and post can be used to find:
-        - if the graph has a cycle or not
-        - cut vertex - removal of a vertex will disconnect the graph.
+        - If the graph has a cycle or not
+        - Cut vertex - removal of a vertex will disconnect the graph.
+        - They can be used to find out whether a particular node lies in the sub-tree of another node. To find whether u lies in the sub-tree of v or not we just compare the pre and post number of u and v. If pre[u] > pre[v] and post[u] < post[v] then u lies in the sub-tree of v otherwise not.
 
 
 #### Program to record pre and post values:
@@ -575,14 +585,15 @@ Either you can label each vertex to the component number it belongs to or print 
 
 ##### Python
 ```python
-def dfs(i, res = []):
-    global visited, adj
+def dfs(i, res = [], componentNumber = 1):
+    global visited, adj, components
     visited[i] = 1
     res.append(i)
+    components[i] = componentNumber
     for neighbour in adj[i]:
         if visited[neighbour] == 0:
             visited[neighbour] = 1
-            dfs(neighbour, res)
+            dfs(neighbour, res, componentNumber)
     return res
 adj = {0: [1], 1: [0, 2], 2: [1], 3: [4], 4: [3]}
 visited = [0] * len(adj)
@@ -591,8 +602,7 @@ noOfConnectedComponents = 0
 for i in adj:
     if visited[i] == 0:
         noOfConnectedComponents+=1
-        print(dfs(i, []))
-    components[i] = noOfConnectedComponents
+        print(dfs(i, [], noOfConnectedComponents))
 print(noOfConnectedComponents, components)
 ```
 - This implementation directly prints each connected component.
@@ -618,24 +628,24 @@ public class Main {
             if(visited[i] == false){
                 count++;
                 List<Integer> res = new ArrayList<Integer>();
-                dfs(i, adj, visited, res);
+                dfs(i, adj, visited, res, components, count);
                 for(Integer k : res)
                     System.out.print(k);
                 System.out.println("");
             }
-            components[i] = count;
         }
         System.out.println(count);
     }
     
-    public static void dfs(int s, LinkedList[] adj, boolean[] visited, List<Integer> res)     {
+    public static void dfs(int s, LinkedList[] adj, boolean[] visited, List<Integer> res, int[] components, int count)     {
         visited[s] = true;
         res.add(s);
+        components[s] = count;
         Iterator<Integer> i = adj[s].listIterator();
         while(i.hasNext()){
             int n = i.next();
             if(!visited[n]){
-                dfs(n, adj, visited, res);
+                dfs(n, adj, visited, res, components, count);
             }
         }
     }
@@ -658,7 +668,8 @@ So, having a cycle is equivalent to finding a non tree edge while doing bfs.
 
 We can use DFS as well to find the cycles.
 
-```
+##### Python
+```python
 def dfs(i):
     global visited, parent, adj, pre, post, count
     visited[i] = 1
@@ -689,10 +700,48 @@ print("pre : ",pre )
 print("post : ",post )
 ```
 
+##### Java
 ```Java
+public class Main {
+    public static int count = 0;
+    public static void main(String[] args) {
+        int v = 4;
+        LinkedList<Integer>[] adj = new LinkedList[v];
+        for (int i=0; i<v; ++i)
+            adj[i] = new LinkedList();
+        adj[0].add(1);
+        adj[0].add(2);
+        adj[1].add(2);
+        adj[2].add(0);
+        adj[2].add(3);
+        adj[3].add(3);
+        boolean[] visited = new boolean[adj.length];
+        int[] parent = new int[adj.length];
+        dfs(2, adj, visited, parent);
+    }
+    
+    // instead of passing we can set them as globals
+    public static void dfs(int s, LinkedList[] adj, boolean[] visited, int[] parent){
+
+        // Mark the current node as visited
+        visited[s] = true;
+        System.out.println(s);
+
+        Iterator<Integer> i = adj[s].listIterator();
+        while(i.hasNext()){
+            int n = i.next();
+            if(!visited[n]){
+                parent[n] = s;
+                dfs(n, adj, visited, parent);
+            }else if(parent[n] != s){
+                System.out.println("Contains Cycles");
+            }
+        }
+    }
+}
 ```
 
-[geeksForGeeks](https://www.geeksforgeeks.org/check-given-graph-tree/)
+https://www.geeksforgeeks.org/check-given-graph-tree/
 
 Now we perform DFS on the below image, each connected component will generate a DFS tree.
 And each non-tree edge will generate a cycle.
