@@ -130,5 +130,103 @@ To create the load on the instances use the following commands in each instance,
 
  To generate the stress on the instance.
  
+ ### Load balancing with AWS
  
+ <img width="1440" alt="Screen Shot 2022-01-01 at 5 00 23 PM" src="https://user-images.githubusercontent.com/25131591/147884089-f9e573a3-7078-4e54-ba5e-de3145c8ea71.png">
+
+**Load Balancer types:**
+- Application load balancer (HTTP/HTTPS)
+- Network load Balancer (TCP/UDP/TLS)
+- Classic load Balancer
+ 
+**Steps:**
+- Configure load balancer
+  - VPC, Availabilty zones, subnets
+- Configure security settings
+- Configure security groups
+- Configure routing
+- Register targets and review
+
+As a demo(view video for clear understanding):
+- Create load balancer with above steps
+- Create an s3 instance for accessing the objects
+- Create a launch template for auto scaling groups with access role to above s3 instance (By pasting the below image code into user data)
+- Then create and auto scaling group by following the creatin steps and configure load balancer and ELB in advance options step.
+- view in target group: for instance the above load balancing is responsible for
+- Copy the DNS name of the load balancer and try it out in browser (we get different response on each refresh - it indicates that they are connecting to different instances as the load is balanced)
+
+
+### AWS storage services
+
+- Object based
+- Block based
+- File based
+
+<img width="1440" alt="Screen Shot 2022-01-03 at 12 35 30 PM" src="https://user-images.githubusercontent.com/25131591/147974048-c51a55bb-b369-47b4-b263-3939791a83f0.png">
+
+**Services:**
+- Amazon s3
+- Amazon EBS
+- Amazon EFS
+
+#### EBS (Elastic block store):
+
+<img width="1440" alt="Screen Shot 2022-01-03 at 12 36 16 PM" src="https://user-images.githubusercontent.com/25131591/147974131-bdf4fee0-869e-449d-8c15-cf53bbfef20c.png">
+
+<img width="1440" alt="Screen Shot 2022-01-03 at 12 36 24 PM" src="https://user-images.githubusercontent.com/25131591/147974147-95d31337-8f13-4676-bbb2-75451e5e5ce5.png">
+
+**Test:** (Try Creating Instance and storage in the same availability zone (later we see with different availability zone))
+- Create a volume by clicking on volume of EBS in new EC2 experience.
+- Fill in details like Volume Type, Size, IOPS, Availability Zone etc.
+- Create new EC2 Instance (Windows) as describe previously.
+- Try logging into the instance and check - we see only C drive.
+- Now go to IAM instance console > volume, add the available volume to instance.
+- Now again check back in the EC2 instance by logging in, You will see a new drive in windows.
+
+ 
+ #### Instance store
+ 
+ <img width="1440" alt="Screen Shot 2022-01-03 at 1 21 37 PM" src="https://user-images.githubusercontent.com/25131591/147976653-05f51ac6-daff-43a9-aa05-a469688fcd0e.png">
+
+You can see the instance stores in the storage section of EC2 creation.
+
+**EBS snapshots and AMI's:**
+ <img width="1440" alt="Screen Shot 2022-01-03 at 1 28 20 PM" src="https://user-images.githubusercontent.com/25131591/147977495-dfda7bdb-95f6-46be-8db3-c31860fc01c6.png">
+ 
+Snapshots are more of back up kind of thing.
+We have created a volume in previous test and attached to a EC2 which is in the same availability zone(A). Now create a snapshot of it and later create a volume out of the snapshot in a new availabilty zone(B) and attach newly created volume from snapshot to an instance created in availabilty zone(B).
+
+AMI are can be created from snapshots and used to created instances in various availabilty zones.
+
+#### Elastic file system (EFS):
+
+<img width="1440" alt="Screen Shot 2022-01-03 at 4 06 09 PM" src="https://user-images.githubusercontent.com/25131591/148078349-39524f37-52f1-49e7-b0fc-96a8c4f12b69.png">
+
+<img width="1440" alt="Screen Shot 2022-01-03 at 4 13 41 PM" src="https://user-images.githubusercontent.com/25131591/148078376-f9a6bb54-2fee-4af4-b28f-e7808935b632.png">
+
+- Create a File system which will be available in each availability zone and have security group which as a inbound NFT included.
+- Creata two EC2 instance in different availability zones.
+- Attach the file system through the above commands.
+
+Now the two instances which are in different avaialbility zones have access to file system (They see the same content).
+
+### S3 buckets
+
+#### Create S3 bucket and make public 
+<img width="1440" alt="Screen Shot 2022-01-04 at 8 06 06 AM" src="https://user-images.githubusercontent.com/25131591/148080228-fd9a5b16-da75-4760-9e8a-7aa6833d6183.png">
+
+Create S3 bucket with default options and add files
+**Explore various clasess of storage:**
+<img width="1440" alt="Screen Shot 2022-01-04 at 8 13 55 AM" src="https://user-images.githubusercontent.com/25131591/148080532-cf8227ee-3211-48f8-ac6c-f05c36f3bbe5.png">
+
+And copy the URL of an image and try accessing the image. we are restricted from public access. So change the permissions.
+<img width="1440" alt="Screen Shot 2022-01-04 at 8 16 43 AM" src="https://user-images.githubusercontent.com/25131591/148080886-6916a3f7-388c-4057-a3d1-9117ff75b988.png">
+
+<img width="1440" alt="Screen Shot 2022-01-04 at 8 10 57 AM" src="https://user-images.githubusercontent.com/25131591/148080914-9ad7d75b-3750-4007-9a7b-bbe8900897ed.png">
+
+Try accessing it now.
+
+
+
+
 
